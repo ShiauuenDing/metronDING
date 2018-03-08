@@ -1,0 +1,9 @@
+# Ignore all node_modules
+node_modules
+
+# Compiled JS, copied...
+public/bundle.js
+public/bundle.js.map
+
+# NPM errors, copied...
+npm-debug.log
