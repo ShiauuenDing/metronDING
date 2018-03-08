@@ -23,7 +23,9 @@
 		<canvas nx="matrix"></canvas>
 	</div>	
 	<script>
-		//setup a polyphonic sampler
+		// Audio setup with Tone.js.
+
+		// Set up a polyphonic sampler.
 		var keys = new Tone.Players({
 			"A" : "./audio/casio/A1.[mp3|ogg]",
 			"C#" : "./audio/casio/Cs2.[mp3|ogg]",
@@ -34,9 +36,10 @@
 			"fadeOut" : "64n",
 		}).toMaster();
 
-		//the notes
+		// The notes.
 		var noteNames = ["F#", "E", "C#", "A"];
 
+		// The sequencer.
 		var loop = new Tone.Sequence(function(time, col){
 			var column = matrix1.matrix[col];
 			for (var i = 0; i < 4; i++){
@@ -50,7 +53,7 @@
 
 		Tone.Transport.start();
 
-		// GUI //
+		// GUI setup with nexusUI.
 
 		nx.onload = function(){
 			nx.colorize("#f5871f");
