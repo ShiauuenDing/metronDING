@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+	<title>SCORE</title>
+
+	<script src="./build/Tone.js"></script>
+	<script src="./scripts/jquery.min.js"></script>
+	<script src="./scripts/draggabilly.js"></script>
+	<script src="./scripts/StartAudioContext.js"></script>
+	<script src="./scripts/Interface.js"></script>
+	<script src="./scripts/nexusUI.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+</head>
+<body>	
+	<div id="Content">
+
+		<div id="Title">Metronome for New Music</div>
+		<div id="Explanation">
+			This metronome can be customized to loop through non-conventional time signatures. 
+		</div>
+
+		<div>
+			<br>
+			<form>
+				Beats per measure <input type="number" name="beats" value="7" min="2" max="16">
+			</form>
+			<form>
+				Measures to loop <input type="number" name="loops" value="4" min="1" max="100">
+			</form>
+			<form>
+				Tempo <input type="number" name="tempo" value="120" min="10" max="300">
+			</form>
+			<input type="submit" value="Submit">
+		</div>
+
+
+		<canvas nx="matrix"></canvas>
+	</div>
+
+
+	<script>
+		var beats;
+		document.querySelector("input[name='beats']").addEventListener('change', (event) => {
+    		event.preventDefault();
+    		// console.log(event.target.value);
+    		beats = event.target.value;
+    		console.log('query: ', beats);
+		})
+
+
+		// Audio setup with Tone.js.
+
+		// Set up a polyphonic sampler.
+		var keys = new Tone.Players({
+			"B" : "./audio/casio/B1.[mp3|ogg]",
+			"C" : "./audio/casio/C2.[mp3|ogg]",
+			"E" : "./audio/casio/E2.[mp3|ogg]",
+			// "F#" : "./audio/casio/Fs2.[mp3|ogg]",
+			"basic" : "./audio/505/agogoHigh.[mp3|ogg]",
+			"accent-primary" : "./audio/505/hh.[mp3|ogg]"
+		}, {
+			"volume" : -10, // default is 0
+			"fadeOut" : "4n",
+		}).toMaster();
+
+
+
+		// The notes.
+		var noteNames = ["basic", "accent-primary", "C", "B"];
+
+		// The sequencer.
+		var loop = new Tone.Sequence(function(time, col){
+			var column = matrix1.matrix[col];
+			for (var i = 0; i < 4; i++){
+				if (column[i] === 1){
+					//slightly randomized velocities
+					var vel = Math.random() * 0.5 + 0.5;
+					keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
+				}
+			}
+		}, [0, 1, 2, 3, 4, 5, 6],  // the array is for the beats per measure
+
+		"4n");
+
+		Tone.Transport.start();
+
+		// GUI setup with nexusUI.
+
+		nx.onload = function(){
+			nx.colorize("#f5871f");
+			console.log('onload: ', beats);
+			matrix1.col = 7; // beats per measure, to be set up by user
+			matrix1.init();
+			matrix1.resize($("#Content").width(), 150);
+			matrix1.draw();
+		}
+
+		// needs to show the number
+		Interface.Slider({
+			name : "BPM",
+			min : 10,
+			max : 300,
+			value : Tone.Transport.bpm.value,
+			drag : function(val){
+				Tone.Transport.bpm.value = val;
+			}
+		});
+
+		Interface.Button({
+			text : "Start",
+			activeText : "Stop",
+			type : "toggle",
+			key : 32, //spacebar
+			start : function(){
+				loop.start();
+			},
+			end : function(){
+				loop.stop();
+			},
+		});
+
+		Interface.Loader();
+
+		$(window).on("resize", function(){
+			matrix1.resize($("#Content").width(), 250);
+			matrix1.draw();	
+		});
+
+	</script>
+</body>
+</html>

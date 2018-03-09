@@ -2,97 +2,203 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SCORE</title>
+	<title>Metronome for New Music</title>
 
-	<script src="./build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="./scripts/nexusUI.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/basic.css">
 </head>
 <body>	
 	<div id="Content">
-		<div id="Title">Tone.Transport</div>
+
+		<div id="Title">Metronome for New Music</div>
 		<div id="Explanation">
-			<a href="https://tonejs.github.io/docs/#Transport">Tone.Transport</a> 
-			is the application-wide timekeeper. It's clock source enables sample-accurate scheduling as well as tempo-curves and automation. This example uses Tone.Sequence to invoke a callback every 16th note.
+			This metronome can be customized to loop through non-conventional time signatures. 
 		</div>
-		<canvas nx="matrix"></canvas>
-	</div>	
+
+		<br>
+		<table id="theTable">
+			<tr>
+				<th></th>
+				<th>Tempo</th>
+				<th>Beats</th>
+				<th>Loops</th>
+				<th>Accents</th>
+				<th></th>
+			</tr>
+
+			<tr>
+				<!-- <td><button id="btn-play">play</button></td> -->
+				<td><input type="button" id="btn-play" value="play"></td>
+				<td><input type="number" name="tempo" value="120" min="10" max="300"></td>
+				<td><input type="number" name="beats" value="7" min="2" max="16"></td>
+				<td><input type="number" name="loops" value="10" min="2" max="300"></td>
+				<td>
+					<form action="/action_page.php" method="get">
+						<input type="checkbox" name="beat" value="1" checked>
+						<input type="checkbox" name="beat" value="2"> 
+						<input type="checkbox" name="beat" value="3"> 
+						<input type="checkbox" name="beat" value="4"> 
+						<input type="checkbox" name="beat" value="5" checked> 
+						<input type="checkbox" name="beat" value="6"> 
+						<input type="checkbox" name="beat" value="7"> 
+					</form>
+				</td>
+				<!-- <td><input type="button" id="btn-delete" value="delete" onclick="deleteRow(this)"></td> -->
+ 				<td><input type="button" id="btn-delete" value="delete"></td>
+			</tr>
+
+			<tr>
+				<td><input type="button" id="btn-play" value="play"></td>
+				<td><input type="number" name="tempo" value="155" min="10" max="300"></td>
+				<td><input type="number" name="beats" value="5" min="2" max="16"></td>
+				<td><input type="number" name="loops" value="2" min="2" max="300"></td>
+				<td>
+					<form action="/action_page.php" method="get">
+						<input type="checkbox" name="beat" value="1" checked>
+						<input type="checkbox" name="beat" value="2"> 
+						<input type="checkbox" name="beat" value="3" checked> 
+						<input type="checkbox" name="beat" value="4"> 
+						<input type="checkbox" name="beat" value="5" checked> 
+					</form>
+				</td>
+<!-- 				<td><input type="button" id="btn-delete" value="delete" onclick="deleteRow(this)"></td>
+ -->				<!-- not good to have onclick here, should use addEventListener in JS -->
+ 				<td><input type="button" id="btn-delete" value="delete"></td>
+
+			</tr>
+		</table>
+
+		<br>
+		<button onclick="addRow()">Add</button>
+
+	</div>
+
+
 	<script>
-		// Audio setup with Tone.js.
 
-		// Set up a polyphonic sampler.
-		var keys = new Tone.Players({
-			"A" : "./audio/casio/A1.[mp3|ogg]",
-			"C#" : "./audio/casio/Cs2.[mp3|ogg]",
-			"E" : "./audio/casio/E2.[mp3|ogg]",
-			"F#" : "./audio/casio/Fs2.[mp3|ogg]",
-		}, {
-			"volume" : -10,
-			"fadeOut" : "64n",
-		}).toMaster();
+		// when play button is clicked, change value to stop, and vice versa
+		document.querySelector("input[id='btn-play']").addEventListener("click", (event) => {
+    		event.preventDefault();
+    		if(event.target.value === "play") event.target.value = "stop";
+    		else event.target.value = "play";
+		})
 
-		// The notes.
-		var noteNames = ["F#", "E", "C#", "A"];
+		// track tempo value
+		let tempo;
+		document.querySelector("input[name='tempo']").addEventListener("change", (event) => {
+    		event.preventDefault();
+    		console.log("tempo: ", event.target.value);
+    		tempo = event.target.value;
+    		// console.log('query: ', tempo);
+		})
 
-		// The sequencer.
-		var loop = new Tone.Sequence(function(time, col){
-			var column = matrix1.matrix[col];
-			for (var i = 0; i < 4; i++){
-				if (column[i] === 1){
-					//slightly randomized velocities
-					var vel = Math.random() * 0.5 + 0.5;
-					keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
-				}
-			}
-		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
+		// track beats value
+		let beats;
+		document.querySelector("input[name='beats']").addEventListener("change", (event) => {
+    		event.preventDefault();
+    		console.log("beats: ", event.target.value);
+    		beats = event.target.value;
+    		// console.log('query: ', beats);
+		})
 
-		Tone.Transport.start();
+		// track loops value
+		let loops;
+		document.querySelector("input[name='loops']").addEventListener("change", (event) => {
+    		event.preventDefault();
+    		console.log("loops: ", event.target.value);
+    		loops = event.target.value;
+    		// console.log('query: ', loops);
+		})
 
-		// GUI setup with nexusUI.
+		document.getElementById("btn-delete").addEventListener("click", function(event) {
+			// console.log("trying to delete: ", event.target);
+			// console.log(this);
+			// deleteRow(this);
+		})
 
-		nx.onload = function(){
-			nx.colorize("#f5871f");
-			
-			matrix1.col = 16;
-			matrix1.init();
-			matrix1.resize($("#Content").width(), 250);
-			matrix1.draw();
+		// event delegation: here to get the entire table to listen to the event
+		document.getElementById("theTable").addEventListener("click", function(event) {
+			// console.log(event.target);
+			// console.log(this);
+		})
+
+		function addRow() {
+
+		    const table = document.getElementById("theTable");
+		    const rowCount = table.rows.length;
+		    const row = table.insertRow(rowCount);
+
+		    const cell0 = row.insertCell(0);
+		    const element0 = document.createElement("input");
+		    element0.type = "button";
+		    element0.id = "btn-play";
+		    element0.value = "play";
+		    cell0.appendChild(element0);
+
+		    const cell1 = row.insertCell(1);
+		    const element1 = document.createElement("input");
+		    element1.type = "number";
+		    element1.name = "tempo";
+		    element1.value = "80";
+		    element1.min = "10";
+		    element1.max = "300";
+		    cell1.appendChild(element1);
+
+		    const cell2 = row.insertCell(2);
+		    const element2 = document.createElement("input");
+		    element2.type = "number";
+		    element2.name = "beats";
+		    element2.value = "4";
+		    element2.min = "2";
+		    element2.max = "16";
+		    cell2.appendChild(element2);
+
+		    const cell3 = row.insertCell(3);
+		    const element3 = document.createElement("input");
+		    element3.type = "number";
+		    element3.name = "loops";
+		    element3.value = "10";
+		    element3.min = "2";
+		    element3.max = "300";
+		    cell3.appendChild(element3);
+
+		    const cell4 = row.insertCell(4);
+		    const element4 = document.createElement("form");
+		    const element4children1 = document.createElement("input");
+		    element4children1.type = "checkbox";
+		    element4children1.name = "beat";
+		    element4children1.checked = "checked";
+		    element4.appendChild(element4children1);
+		    const element4children2 = document.createElement("input");
+		    element4children2.type = "checkbox";
+		    element4children2.name = "beat";
+		    element4.appendChild(element4children2);
+		    const element4children3 = document.createElement("input");
+		    element4children3.type = "checkbox";
+		    element4children3.name = "beat";
+		    element4.appendChild(element4children3);
+		    const element4children4 = document.createElement("input");
+		    element4children4.type = "checkbox";
+		    element4children4.name = "beat";
+		    element4.appendChild(element4children4);
+		    const element4children5 = document.createElement("input");
+		    element4children5.type = "checkbox";
+		    element4children5.name = "beat";
+		    element4.appendChild(element4children5);
+		    cell4.appendChild(element4);
+
+		    const cell5 = row.insertCell(5);
+		    const element5 = document.createElement("input");
+		    element5.type = "button";
+		    element5.value = "delete";
+		    element5.id = "btn-delete";
+		    // element5.onclick = deleteRow(this);
+		    cell5.appendChild(element5);
+
 		}
 
-		Interface.Slider({
-			name : "BPM",
-			min : 80,
-			max : 200,
-			value : Tone.Transport.bpm.value,
-			drag : function(val){
-				Tone.Transport.bpm.value = val;
-			}
-		});
-
-		Interface.Button({
-			text : "Start",
-			activeText : "Stop",
-			type : "toggle",
-			key : 32, //spacebar
-			start : function(){
-				loop.start();
-			},
-			end : function(){
-				loop.stop();
-			},
-		});
-
-		Interface.Loader();
-
-		$(window).on("resize", function(){
-			matrix1.resize($("#Content").width(), 250);
-			matrix1.draw();	
-		});
+		function deleteRow(r) {
+			document.getElementById('theTable').deleteRow(r.parentNode.parentNode.rowIndex);
+		}
 
 	</script>
 </body>
