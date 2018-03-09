@@ -2,97 +2,130 @@
 <html>
 <head>
   <meta charset="utf-8">
-	<title>SCORE</title>
+	<title>Metronome for New Music</title>
 
-	<script src="./build/Tone.js"></script>
-	<script src="./scripts/jquery.min.js"></script>
-	<script src="./scripts/draggabilly.js"></script>
-	<script src="./scripts/StartAudioContext.js"></script>
-	<script src="./scripts/Interface.js"></script>
-	<script src="./scripts/nexusUI.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="./style/examples.css">
+	<link rel="stylesheet" type="text/css" href="./style/basic.css">
 </head>
 <body>	
 	<div id="Content">
-		<div id="Title">Tone.Transport</div>
+
+		<div id="Title">Metronome for New Music</div>
 		<div id="Explanation">
-			<a href="https://tonejs.github.io/docs/#Transport">Tone.Transport</a> 
-			is the application-wide timekeeper. It's clock source enables sample-accurate scheduling as well as tempo-curves and automation. This example uses Tone.Sequence to invoke a callback every 16th note.
+			This metronome can be customized to loop through non-conventional time signatures. 
 		</div>
-		<canvas nx="matrix"></canvas>
-	</div>	
+
+		<br>
+		<table id="theTable">
+			<tr>
+				<th></th>
+				<th>Tempo</th>
+				<th>Beats</th>
+				<th>Loops</th>
+				<th>Accents</th>
+				<th></th>
+			</tr>
+		</table>
+
+		<br>
+		<button onclick="addPattern()">Add</button>
+		<button onclick="playPiece()">Play</button>
+	</div>
+
+
 	<script>
-		// Audio setup with Tone.js.
+		const patterns = [];
 
-		// Set up a polyphonic sampler.
-		var keys = new Tone.Players({
-			"A" : "./audio/casio/A1.[mp3|ogg]",
-			"C#" : "./audio/casio/Cs2.[mp3|ogg]",
-			"E" : "./audio/casio/E2.[mp3|ogg]",
-			"F#" : "./audio/casio/Fs2.[mp3|ogg]",
-		}, {
-			"volume" : -10,
-			"fadeOut" : "64n",
-		}).toMaster();
-
-		// The notes.
-		var noteNames = ["F#", "E", "C#", "A"];
-
-		// The sequencer.
-		var loop = new Tone.Sequence(function(time, col){
-			var column = matrix1.matrix[col];
-			for (var i = 0; i < 4; i++){
-				if (column[i] === 1){
-					//slightly randomized velocities
-					var vel = Math.random() * 0.5 + 0.5;
-					keys.get(noteNames[i]).start(time, 0, "32n", 0, vel);
-				}
-			}
-		}, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], "16n");
-
-		Tone.Transport.start();
-
-		// GUI setup with nexusUI.
-
-		nx.onload = function(){
-			nx.colorize("#f5871f");
-			
-			matrix1.col = 16;
-			matrix1.init();
-			matrix1.resize($("#Content").width(), 250);
-			matrix1.draw();
+		const playPiece = function() {
+			console.log("Not implemented...");
 		}
 
-		Interface.Slider({
-			name : "BPM",
-			min : 80,
-			max : 200,
-			value : Tone.Transport.bpm.value,
-			drag : function(val){
-				Tone.Transport.bpm.value = val;
+		const addPattern = function() {
+			const table = document.getElementById("theTable");
+			const row = table.insertRow();
+			pattern = {
+				tempo: 120,
+				beats: 4,
+				loops: 1,
+				accents: [1]
 			}
-		});
+			row.addEventListener("click", function(e) {
+				console.log(e.target.name);
+				if (e.target.name === "delete") {
+					deletePattern(pattern);
+				}
+			});
+			row.addEventListener("change", function(e) {
+				if(e.target.name === "tempo") {
+					pattern.tempo = e.target.value;
+				}
+				if(e.target.name === "beats") {
+					pattern.beats = e.target.value;
+					displayPattern(pattern, row);
+				}
+				if(e.target.name === "loops") {
+					pattern.loops = e.target.value;
+				}
+				if(e.target.name.startsWith("accent-")) {
+					let i = +e.target.name.replace("accent-", "");
+					pattern.accents[i] = e.target.checked ? 1 : 0;
+				}
+			});
+			patterns.push(pattern);
+			displayPattern(pattern, row);
+		}
 
-		Interface.Button({
-			text : "Start",
-			activeText : "Stop",
-			type : "toggle",
-			key : 32, //spacebar
-			start : function(){
-				loop.start();
-			},
-			end : function(){
-				loop.stop();
-			},
-		});
+		const displayPattern = function(p, r) {
+			r.innerHTML = "";
+			const cell0 = r.insertCell(); // change cell0 to play, element0 to something meaningful
+		    const element0 = document.createElement("input");
+		    element0.type = "button";
+		    element0.name = "play";
+		    element0.value = "play";
+		    cell0.appendChild(element0);
 
-		Interface.Loader();
+		    const cell1 = r.insertCell();
+		    const element1 = document.createElement("input");
+		    element1.type = "number";
+		    element1.name = "tempo";
+		    element1.value = p.tempo;
+		    element1.min = "10";
+		    element1.max = "300";
+		    cell1.appendChild(element1);
 
-		$(window).on("resize", function(){
-			matrix1.resize($("#Content").width(), 250);
-			matrix1.draw();	
-		});
+		    const cell2 = r.insertCell();
+		    const element2 = document.createElement("input");
+		    element2.type = "number";
+		    element2.name = "beats";
+		    element2.value = p.beats;
+		    element2.min = "1";
+		    element2.max = "16";
+		    cell2.appendChild(element2);
+
+		    const cell3 = r.insertCell();
+		    const element3 = document.createElement("input");
+		    element3.type = "number";
+		    element3.name = "loops";
+		    element3.value = p.loops;
+		    element3.min = "1";
+		    element3.max = "300";
+		    cell3.appendChild(element3);
+
+		    const cell4 = r.insertCell();
+		    for(let i = 0; i < p.beats; i++) {
+		    	const checkbox = document.createElement("input");
+		    	checkbox.type = "checkbox";
+			    checkbox.name = "accent-" + i;
+			    checkbox.checked = p.accents[i] ? "checked" : "";
+			    cell4.appendChild(checkbox);
+		    }
+
+		    const cell5 = r.insertCell();
+		    const element5 = document.createElement("input");
+		    element5.type = "button";
+		    element5.value = "delete";
+		    element5.name = "delete";
+		    cell5.appendChild(element5);
+		}
 
 	</script>
 </body>
