@@ -46,8 +46,7 @@
 				tempo: 120,
 				beats: 4,
 				loops: 1,
-				accents: [1],
-				row: row
+				accents: [1]
 			}
 			row.addEventListener("click", function(e) {
 				console.log(e.target.name);
@@ -56,13 +55,12 @@
 				}
 			});
 			row.addEventListener("change", function(e) {
-				console.log(e);
 				if(e.target.name === "tempo") {
 					pattern.tempo = e.target.value;
 				}
 				if(e.target.name === "beats") {
 					pattern.beats = e.target.value;
-					displayPattern(pattern);
+					displayPattern(pattern, row);
 				}
 				if(e.target.name === "loops") {
 					pattern.loops = e.target.value;
@@ -73,19 +71,19 @@
 				}
 			});
 			patterns.push(pattern);
-			displayPattern(pattern);
+			displayPattern(pattern, row);
 		}
 
-		const displayPattern = function(p) {
-			p.row.innerHTML = "";
-			const cell0 = p.row.insertCell(); // change cell0 to play, element0 to something meaningful
+		const displayPattern = function(p, r) {
+			r.innerHTML = "";
+			const cell0 = r.insertCell(); // change cell0 to play, element0 to something meaningful
 		    const element0 = document.createElement("input");
 		    element0.type = "button";
 		    element0.name = "play";
 		    element0.value = "play";
 		    cell0.appendChild(element0);
 
-		    const cell1 = p.row.insertCell();
+		    const cell1 = r.insertCell();
 		    const element1 = document.createElement("input");
 		    element1.type = "number";
 		    element1.name = "tempo";
@@ -94,7 +92,7 @@
 		    element1.max = "300";
 		    cell1.appendChild(element1);
 
-		    const cell2 = p.row.insertCell();
+		    const cell2 = r.insertCell();
 		    const element2 = document.createElement("input");
 		    element2.type = "number";
 		    element2.name = "beats";
@@ -103,7 +101,7 @@
 		    element2.max = "16";
 		    cell2.appendChild(element2);
 
-		    const cell3 = p.row.insertCell();
+		    const cell3 = r.insertCell();
 		    const element3 = document.createElement("input");
 		    element3.type = "number";
 		    element3.name = "loops";
@@ -112,7 +110,7 @@
 		    element3.max = "300";
 		    cell3.appendChild(element3);
 
-		    const cell4 = p.row.insertCell();
+		    const cell4 = r.insertCell();
 		    for(let i = 0; i < p.beats; i++) {
 		    	const checkbox = document.createElement("input");
 		    	checkbox.type = "checkbox";
@@ -121,7 +119,7 @@
 			    cell4.appendChild(checkbox);
 		    }
 
-		    const cell5 = p.row.insertCell();
+		    const cell5 = r.insertCell();
 		    const element5 = document.createElement("input");
 		    element5.type = "button";
 		    element5.value = "delete";
