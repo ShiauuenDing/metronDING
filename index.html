@@ -43,6 +43,7 @@
 
 
 	<script>
+		"use strict";
 
 		const patterns = [];
 
@@ -94,15 +95,17 @@
 			}
 		});
 
+		// let count = 0;
 		const addPattern = function() {
 			const table = document.getElementById("theTable");
 			const row = table.insertRow();
-			pattern = {
+			// row.id = "row-" + count++;
+			let pattern = {
 				tempo: 120,
 				beats: 4,
 				loops: 1,
 				accents: [true]
-			}			
+			}
 			// row.addEventListener("click", function(e) {
 			// 	console.log(e.target.name);
 			// 	if (e.target.name === "delete") {
@@ -128,7 +131,7 @@
 					let i = +e.target.name.replace("accent-", "");
 					pattern.accents[i] = e.target.checked;
 				}
-				console.log(patterns);
+				// console.log(patterns);
 			});
 
 			patterns.push(pattern);
