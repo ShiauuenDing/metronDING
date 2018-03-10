@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
 	<title>Metronome for New Music</title>
-
+	<script src="./build/Tone.js"></script>
 	<link rel="stylesheet" type="text/css" href="./style/basic.css">
 </head>
+
 <body>	
 	<div id="Content">
 
@@ -17,27 +18,74 @@
 		<br>
 		<table id="theTable">
 			<tr>
-				<th></th>
 				<th>Tempo</th>
 				<th>Beats</th>
-				<th>Loops</th>
 				<th>Accents</th>
-				<th></th>
+				<th>Loops</th>
 			</tr>
 		</table>
-
 		<br>
+
 		<button onclick="addPattern()">Add</button>
-		<button onclick="playPiece()">Play</button>
+		<!-- <button id="play" onclick="playPiece()">Play</button> -->
+		<!-- <input type="checkbox" class="playToggle" onclick="playPiece()"> -->
+		<input type="checkbox" class="playToggle">
+
 	</div>
 
 
 	<script>
+
 		const patterns = [];
 
-		const playPiece = function() {
-			console.log("Not implemented...");
+		//create a synth and connect it to the master output (your speakers)
+		var synth = new Tone.Synth().toMaster()
+
+		const triggerSynth = function() {
+			synth.triggerAttackRelease('C2', '16n');
 		}
+
+		const triggerSynthAccent = function() {
+			synth.triggerAttackRelease('C8', '16n');
+		}
+
+		let noteEventID;
+		// start/stop the transport
+		document.querySelector('.playToggle').addEventListener('change', function(e) {
+			if (e.target.checked && patterns.length > 0){
+				Tone.Transport.start('+0.1');
+				let pattern_index = 0;
+				let loop_index = 0;
+				let beat_index = 0;
+				noteEventID = Tone.Transport.scheduleRepeat((time) => {
+					console.log(patterns[pattern_index]);
+					// go thru patterns
+					// in each pattern, go thru loops
+					// in each loop, go thru beats
+					Tone.Transport.bpm.value = patterns[pattern_index].tempo;
+					if(patterns[pattern_index].accents[beat_index]) {
+						triggerSynthAccent();
+					} else {
+						triggerSynth();
+					}
+					beat_index++;
+					if(beat_index === patterns[pattern_index].beats) {
+						loop_index++;
+						beat_index = 0;
+						if(loop_index === patterns[pattern_index].loops) {
+							pattern_index++;
+							loop_index = 0;
+							if(pattern_index === patterns.length) {
+								pattern_index = 0;
+							}
+						}
+					}
+				}, "4n");
+			} else {
+				Tone.Transport.stop();
+				Tone.Transport.clear(noteEventID);
+			}
+		});
 
 		const addPattern = function() {
 			const table = document.getElementById("theTable");
@@ -46,85 +94,92 @@
 				tempo: 120,
 				beats: 4,
 				loops: 1,
-				accents: [1]
-			}
-			row.addEventListener("click", function(e) {
-				console.log(e.target.name);
-				if (e.target.name === "delete") {
-					deletePattern(pattern);
-				}
-			});
+				accents: [true]
+			}			
+			// row.addEventListener("click", function(e) {
+			// 	console.log(e.target.name);
+			// 	if (e.target.name === "delete") {
+			// 		deletePattern(pattern);
+			// 	}
+			// });
 			row.addEventListener("change", function(e) {
+				// console.log(e.target.name + ": " + e.target.value);
 				if(e.target.name === "tempo") {
-					pattern.tempo = e.target.value;
+					pattern.tempo = +e.target.value;
 				}
 				if(e.target.name === "beats") {
-					pattern.beats = e.target.value;
+					pattern.beats = +e.target.value;
 					displayPattern(pattern, row);
 				}
 				if(e.target.name === "loops") {
-					pattern.loops = e.target.value;
+					pattern.loops = +e.target.value;
 				}
 				if(e.target.name.startsWith("accent-")) {
+					// console.log("e.target.name: " + e.target.name);
+					// console.log("e.target.value: " + e.target.value);
+					// console.log("e.target.checked: " + e.target.checked);
 					let i = +e.target.name.replace("accent-", "");
-					pattern.accents[i] = e.target.checked ? 1 : 0;
+					pattern.accents[i] = e.target.checked;
 				}
+				console.log(patterns);
 			});
+
 			patterns.push(pattern);
 			displayPattern(pattern, row);
 		}
 
 		const displayPattern = function(p, r) {
 			r.innerHTML = "";
-			const cell0 = r.insertCell(); // change cell0 to play, element0 to something meaningful
-		    const element0 = document.createElement("input");
-		    element0.type = "button";
-		    element0.name = "play";
-		    element0.value = "play";
-		    cell0.appendChild(element0);
 
-		    const cell1 = r.insertCell();
-		    const element1 = document.createElement("input");
-		    element1.type = "number";
-		    element1.name = "tempo";
-		    element1.value = p.tempo;
-		    element1.min = "10";
-		    element1.max = "300";
-		    cell1.appendChild(element1);
+			// const playCell = r.insertCell();
+		 //    const playElement = document.createElement("input");
+		 //    playElement.type = "button";
+		 //    playElement.name = "play";
+		 //    playElement.value = "play";
+		 //    playCell.appendChild(playElement);
 
-		    const cell2 = r.insertCell();
-		    const element2 = document.createElement("input");
-		    element2.type = "number";
-		    element2.name = "beats";
-		    element2.value = p.beats;
-		    element2.min = "1";
-		    element2.max = "16";
-		    cell2.appendChild(element2);
+		    const tempoCell = r.insertCell();
+		    const tempoElement = document.createElement("input");
+		    tempoElement.type = "number";
+		    tempoElement.name = "tempo";
+		    tempoElement.value = p.tempo;
+		    tempoElement.min = "10";
+		    tempoElement.max = "1000";
+		    tempoCell.appendChild(tempoElement);
 
-		    const cell3 = r.insertCell();
-		    const element3 = document.createElement("input");
-		    element3.type = "number";
-		    element3.name = "loops";
-		    element3.value = p.loops;
-		    element3.min = "1";
-		    element3.max = "300";
-		    cell3.appendChild(element3);
+		    const beatsCell = r.insertCell();
+		    const beatsElement = document.createElement("input");
+		    beatsElement.type = "number";
+		    beatsElement.name = "beats";
+		    beatsElement.value = p.beats;
+		    beatsElement.min = "1";
+		    beatsElement.max = "16";
+		    beatsCell.appendChild(beatsElement);
 
-		    const cell4 = r.insertCell();
+		    const accentsCell = r.insertCell();
 		    for(let i = 0; i < p.beats; i++) {
 		    	const checkbox = document.createElement("input");
 		    	checkbox.type = "checkbox";
 			    checkbox.name = "accent-" + i;
 			    checkbox.checked = p.accents[i] ? "checked" : "";
-			    cell4.appendChild(checkbox);
+			    accentsCell.appendChild(checkbox);
 		    }
 
-		    const cell5 = r.insertCell();
-		    const element5 = document.createElement("input");
-		    element5.type = "button";
-		    element5.value = "delete";
-		    element5.name = "delete";
-		    cell5.appendChild(element5);
+		    const loopsCell = r.insertCell();
+		    const loopsElement = document.createElement("input");
+		    loopsElement.type = "number";
+		    loopsElement.name = "loops";
+		    loopsElement.value = p.loops;
+		    loopsElement.min = "1";
+		    loopsElement.max = "300";
+		    loopsCell.appendChild(loopsElement);
+
+		    // const deleteCell = r.insertCell();
+		    // const deleteElement = document.createElement("input");
+		    // deleteElement.type = "button";
+		    // deleteElement.value = "delete";
+		    // deleteElement.name = "delete";
+		    // deleteCell.appendChild(deleteElement);
 		}
 
 	</script>
