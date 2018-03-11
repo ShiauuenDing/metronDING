@@ -22,11 +22,13 @@
 				<th>Beats</th>
 				<th>Accents</th>
 				<th>Loops</th>
+				<th></th>
 			</tr>
 		</table>
 		<br>
 
 		<button onclick="addPattern()">Add</button>
+
 		<div>
 			<input type="checkbox" class="playToggle">
 			<!-- <input type="button" class="playToggle" value="play"> -->
@@ -46,7 +48,7 @@
 	<script>
 		"use strict";
 
-		const patterns = [];
+		const patterns = []; // where the info resides
 
 		//create a synth and connect it to the master output (your speakers)
 		var synth = new Tone.Synth().toMaster()
@@ -75,6 +77,7 @@
 					// go thru patterns
 					// in each pattern, go thru loops
 					// in each loop, go thru beats
+
 					Tone.Transport.bpm.value = p.tempo;
 					if(p.accents[beat_index]) {
 						triggerSynthAccent();
@@ -100,11 +103,9 @@
 			}
 		});
 
-		// let count = 0;
 		const addPattern = function() {
 			const table = document.getElementById("theTable");
 			const row = table.insertRow();
-			// row.id = "row-" + count++;
 			let pattern = {
 				tempo: 120,
 				beats: 4,
@@ -112,12 +113,14 @@
 				accents: [true],
 				row: row
 			}
-			// row.addEventListener("click", function(e) {
-			// 	console.log(e.target.name);
-			// 	if (e.target.name === "delete") {
-			// 		deletePattern(pattern);
-			// 	}
-			// });
+
+			row.addEventListener("click", function(e) {
+				console.log(e.target.name);
+				if (e.target.name === "delete") {
+					deletePattern(pattern);
+				}
+			});
+
 			row.addEventListener("change", (e) => {
 				if(e.target.name === "tempo") {
 					pattern.tempo = +e.target.value;
@@ -185,12 +188,25 @@
 		    loopsElement.max = "300";
 		    loopsCell.appendChild(loopsElement);
 
-		    // const deleteCell = p.row.insertCell();
-		    // const deleteElement = document.createElement("input");
-		    // deleteElement.type = "button";
-		    // deleteElement.value = "delete";
-		    // deleteElement.name = "delete";
-		    // deleteCell.appendChild(deleteElement);
+		    const deleteCell = p.row.insertCell();
+		    const deleteElement = document.createElement("input");
+		    deleteElement.type = "button";
+		    deleteElement.value = "delete";
+		    deleteElement.name = "delete";
+		    deleteCell.appendChild(deleteElement);
+		}
+
+		const deletePattern = function(p) {
+			// if the metronome is playing, stop it
+			const isPlaying = document.querySelector('.playToggle');
+			if (isPlaying.checked) {
+				isPlaying.click();
+			}
+
+			const pIndex = patterns.indexOf(p);
+			patterns.splice(pIndex, 1);
+
+			document.getElementById("theTable").deleteRow(p.row.rowIndex);
 		}
 
 	</script>

@@ -16,7 +16,6 @@ html, body {
 
 
 
-
 /*#Content {
   position: absolute;
   left: 0px;
@@ -70,13 +69,17 @@ tr:nth-child(even) {
     background-color: yellow;
     border: 1px solid #ccc;
     border-radius: 30%;
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
     -webkit-appearance: none;
     /*appearance: none;*/
     cursor: pointer;
     position: relative;
     outline: none;
+
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .playToggle:checked {
