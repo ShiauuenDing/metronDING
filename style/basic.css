@@ -1,26 +1,28 @@
 /* FOR MOBILES */
-@media (max-width: 750px) {
+/*@media (max-width: 750px) {
   #TopBar #Homepage a {
     font-size: 16px !important; }
 
   iframe {
     width: 100% !important; }
-}
+}*/
 
 html, body {
   padding: 0px;
   margin: 0px;
   height: calc(100% - 4px);
-  font-family: "Inconsolata", monospace; }
+  font-family: "Inconsolata", monospace;
+}
 
 
 
 
-#Content {
+/*#Content {
   position: absolute;
   left: 0px;
   width: 100%;
-  margin-bottom: 15px; }
+  margin-bottom: 15px;
+}*/
 
 #Content #Title {
     height: 23px;
@@ -29,7 +31,8 @@ html, body {
     color: white;
     width: calc(100% - 15px);
     padding-left: 15px;
-    background-color: black; }
+    background-color: black;
+}
     
 #Content #Explanation {
     position: relative;
@@ -39,7 +42,8 @@ html, body {
     box-sizing: border-box;
     border: 3px solid black;
     border-top-width: 0px;
-    width: 100%; }
+    width: 100%;
+}
 
 
 
@@ -59,3 +63,27 @@ td, th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
+
+
+
+.playToggle {
+    background-color: yellow;
+    border: 1px solid #ccc;
+    border-radius: 30%;
+    width: 30px;
+    height: 30px;
+    -webkit-appearance: none;
+    /*appearance: none;*/
+    cursor: pointer;
+    position: relative;
+    outline: none;
+}
+
+.playToggle:checked {
+    background-color: lightgreen;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+
+
