@@ -7,6 +7,7 @@
     width: 100% !important; }
 }*/
 
+
 html, body {
     padding: 0px;
     margin: 0px;
@@ -64,19 +65,13 @@ button {
 }
 
 
-.slidecontainer {
-    padding: 10px;
-    margin: 30px;
-    height: calc(100% - 4px);
-    font-family: "Inconsolata", monospace;
-}
 
 
 
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    width: 100%;
+    width: 95%;
 }
 
 td, th {
@@ -93,8 +88,12 @@ tr:nth-child(even) {
 
 
 .slidecontainer {
+    padding: 10px;
+    margin: 30px;
+    height: calc(100% - 4px);
+    font-family: "Inconsolata", monospace;
 
-    width: 8%;
+    width: 11%;
     margin-left: auto;
     margin-right: auto;
     font-size: 12px;
