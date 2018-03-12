@@ -8,11 +8,12 @@
 }*/
 
 html, body {
-  padding: 0px;
-  margin: 0px;
-  height: calc(100% - 4px);
-  font-family: "Inconsolata", monospace;
+    padding: 0px;
+    margin: 0px;
+    height: calc(100% - 4px);
+    font-family: "Inconsolata", monospace;
 }
+
 
 
 /*#Content {
@@ -46,6 +47,32 @@ html, body {
 
 
 
+#theTable, button, .playToggle {
+    padding: 0px;
+    margin: 20px;
+    height: calc(100% - 4px);
+    font-family: "Inconsolata", monospace;
+}
+
+
+
+button {
+    padding: 3px;
+    margin: 20px;
+    height: calc(100% - 4px);
+    font-family: "Inconsolata", monospace;
+}
+
+
+.slidecontainer {
+    padding: 10px;
+    margin: 30px;
+    height: calc(100% - 4px);
+    font-family: "Inconsolata", monospace;
+}
+
+
+
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
@@ -61,6 +88,18 @@ td, th {
 tr:nth-child(even) {
     background-color: #dddddd;
 }
+
+
+
+
+.slidecontainer {
+
+    width: 8%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 12px;
+}
+
 
 
 

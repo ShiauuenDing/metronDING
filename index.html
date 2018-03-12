@@ -30,7 +30,14 @@
 		<button onclick="addPattern()">Add</button>
 
 		<div class="slidecontainer">
-		  <input type="range" min="20" max="120" value="100" class="slider">
+<!-- 		  	<input	type="range"
+		  			min="20" max="120" value="100"
+		  			class="slider"
+		  			id="sliderrange" > -->
+			tempi
+				<input	type="number"
+		  				min="20" max="120" value="100"
+		  				id="slidervalue" >%
 		</div>
 
 		<div>
@@ -58,9 +65,19 @@
 		}
 
 		let tempoPercentage = 100;
-		document.querySelector('.slider').addEventListener('change', (e) => {
+		// document.querySelector('.slider').addEventListener('change', (e) => {
+		// 	tempoPercentage = e.target.value;
+		// })
+
+
+		document.getElementById('slidervalue').addEventListener('change', (e) => {
+			console.log("e: " + e.target.value);
 			tempoPercentage = e.target.value;
+			console.log("tempoPercentage: " + tempoPercentage);
 		})
+
+
+
 
 		let noteEventID;
 		// start/stop the transport
@@ -78,7 +95,7 @@
 
 					// all tempi change by percentage thru slider
 					Tone.Transport.bpm.value = p.tempo * tempoPercentage / 100;
-					console.log(Tone.Transport.bpm.value);
+					// console.log(tempoPercentage);
 
 					// go thru patterns
 					// in each pattern, go thru loops
