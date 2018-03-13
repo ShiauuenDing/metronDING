@@ -1,17 +1,7 @@
-/* FOR MOBILES */
-/*@media (max-width: 750px) {
-  #TopBar #Homepage a {
-    font-size: 16px !important; }
-
-  iframe {
-    width: 100% !important; }
-}*/
-
-
 html, body {
-    padding: 0px;
+    /*padding: 0px;*/
     margin: 0px;
-    height: calc(100% - 4px);
+    /*height: calc(100% - 4px);*/
     font-family: "Inconsolata", monospace;
 }
 
@@ -25,24 +15,26 @@ html, body {
 }*/
 
 #Content #Title {
-    height: 23px;
-    line-height: 23px;
+    /*height: 23px;*/
+    /*line-height: 23px;*/
     font-size: 1.2em;
-    color: white;
-    width: calc(100% - 15px);
-    padding-left: 15px;
-    background-color: black;
+    font-weight: bold;
+    color: red;
+    /*width: calc(100% - 15px);*/
+    padding: 15px;
+    /*padding-left: 15px;*/
+    /*background-color: black;*/
 }
     
 #Content #Explanation {
-    position: relative;
-    padding: 15px;
-    color: black;
+    /*position: relative;*/
+    padding-left: 15px;
+    color: red;
     font-size: 14px;
-    box-sizing: border-box;
-    border: 3px solid black;
-    border-top-width: 0px;
-    width: 100%;
+    /*box-sizing: border-box;*/
+    /*border: 3px solid black;*/
+    /*border-top-width: 0px;*/
+    /*width: 100%;*/
 }
 
 
@@ -93,7 +85,7 @@ tr:nth-child(even) {
     height: calc(100% - 4px);
     font-family: "Inconsolata", monospace;
 
-    width: 11%;
+    width: 12%;
     margin-left: auto;
     margin-right: auto;
     font-size: 12px;

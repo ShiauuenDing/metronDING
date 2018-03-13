@@ -34,7 +34,7 @@
 		  			min="20" max="120" value="100"
 		  			class="slider"
 		  			id="sliderrange" > -->
-			tempi
+			tempo scale
 				<input	type="number"
 		  				min="20" max="120" value="100"
 		  				id="slidervalue" >%
@@ -57,12 +57,15 @@
 		var synth = new Tone.Synth().toMaster()
 
 		const triggerSynth = function() {
-			synth.triggerAttackRelease('C2', '16n');
+			synth.triggerAttackRelease('C2', '0.01');
 		}
 
 		const triggerSynthAccent = function() {
-			synth.triggerAttackRelease('C8', '16n');
+			synth.triggerAttackRelease('C8', '0.01');
 		}
+
+
+
 
 		let tempoPercentage = 100;
 		// document.querySelector('.slider').addEventListener('change', (e) => {
