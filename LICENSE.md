@@ -1,1 +1,1 @@
-# Made by Shiau-uen Ding
+# metronDING! is Made by Shiau-uen Ding.
