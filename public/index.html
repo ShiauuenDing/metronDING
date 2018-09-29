@@ -54,10 +54,11 @@
 		const patterns = []; // where the info resides
 
 		//create a synth and connect it to the master output (your speakers)
-		var synth = new Tone.Synth().toMaster()
+		const synth = new Tone.Synth().toMaster();
+		const woodblock = new Tone.Player('./lib/sounds/druminfected_metronome.wav').toMaster();
 
 		const triggerSynth = function() {
-			synth.triggerAttackRelease('C2', '0.01');
+			woodblock.start();
 		}
 
 		const triggerSynthAccent = function() {
