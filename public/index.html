@@ -53,16 +53,16 @@
 
 		const patterns = []; // where the info resides
 
-		//create a synth and connect it to the master output (your speakers)
-		const synth = new Tone.Synth().toMaster();
-		const woodblock = new Tone.Player('./lib/sounds/druminfected__metronome.wav').toMaster();
+		//upload sounds and connect them to the master output (your speakers)
+		const woodblock = new Tone.Player('./lib/sounds/druminfected_metronome.wav').toMaster();
+		const woodblockAccent = new Tone.Player('./lib/sounds/seidhepriest_claves.wav').toMaster();
 
-		const triggerSynth = function() {
+		const triggerSound = function() {
 			woodblock.start();
 		}
 
-		const triggerSynthAccent = function() {
-			synth.triggerAttackRelease('C8', '0.01');
+		const triggerSoundAccent = function() {
+			woodblockAccent.start();
 		}
 
 
@@ -105,9 +105,9 @@
 					// in each pattern, go thru loops
 					// in each loop, go thru beats
 					if(p.accents[beat_index]) {
-						triggerSynthAccent();
+						triggerSoundAccent();
 					} else {
-						triggerSynth();
+						triggerSound();
 					}
 					beat_index++;
 					if(beat_index === p.beats) {
